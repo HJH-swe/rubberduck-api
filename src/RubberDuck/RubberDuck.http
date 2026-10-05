@@ -1,6 +1,9 @@
 @RubberDuck_HostAddress = http://localhost:5235
 
+### Health check
 GET {{RubberDuck_HostAddress}}/health
 Accept: application/json
 
-###
+### Random duck
+GET {{RubberDuck_HostAddress}}/api/duck
+Accept: application/json
