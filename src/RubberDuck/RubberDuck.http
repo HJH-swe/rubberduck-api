@@ -7,3 +7,7 @@ Accept: application/json
 ### Random duck
 GET {{RubberDuck_HostAddress}}/api/duck
 Accept: application/json
+
+### Quote from API Ninjas
+GET https://api.api-ninjas.com/v2/randomquotes?categories=courage
+X-Api-Key: {{apiNinjasKey}}
