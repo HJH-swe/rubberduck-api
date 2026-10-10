@@ -1,7 +1,14 @@
+using Azure.Identity;
 using RubberDuck.Models;
 using RubberDuck.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var keyVaultUri = builder.Configuration["KeyVaultUri"];
+if (!string.IsNullOrEmpty(keyVaultUri))
+{
+    builder.Configuration.AddAzureKeyVault(new Uri(keyVaultUri), new DefaultAzureCredential());
+}
 
 builder.Services.AddHttpClient<IDuckImageClient, DuckImageClient>(client =>
 {

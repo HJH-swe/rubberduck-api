@@ -10,4 +10,9 @@
   <ItemGroup>
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.5.2" />
+    <PackageReference Include="Azure.Identity" Version="1.21.0" />
+  </ItemGroup>
+
 </Project>
