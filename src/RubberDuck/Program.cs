@@ -33,3 +33,5 @@ app.MapGet("/api/duck", async (IDuckImageClient ducks, IQuoteClient quotes, Canc
 });
 
 app.Run();
+
+public partial class Program { }
