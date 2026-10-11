@@ -83,3 +83,24 @@ stages:
               targetPath: '$(Build.ArtifactStagingDirectory)/Output'
               artifact: 'drop'
               publishLocation: 'pipeline'
+
+  - stage: Deploy
+    displayName: Deploy to Azure
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: DeployApp
+        displayName: Deploy to App Service
+        steps:
+          - checkout: none
+
+          - download: current
+            artifact: drop
+
+          - task: AzureWebApp@1
+            displayName: Deploy to App Service
+            inputs:
+              azureSubscription: 'azure-rubberduck'
+              appType: webAppLinux
+              appName: $(webAppName)
+              package: '$(Pipeline.Workspace)/drop/*.zip'
