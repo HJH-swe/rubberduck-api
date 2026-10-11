@@ -11,6 +11,9 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  webAppName: 'app-duckapi-gvfp64nsi3it6'
+
 stages:
   - stage: Build
     displayName: Build and test
@@ -34,7 +37,7 @@ stages:
               projects: '**/*.csproj'
 
           - task: SonarCloudPrepare@4.2.6
-            displayName: Sonare prepare
+            displayName: Sonar prepare
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
             inputs:
               SonarCloud: 'sonarqube-cloud'
@@ -67,3 +70,40 @@ stages:
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
             inputs:
               pollingTimeoutSec: '300'
+
+          - task: DotNetCoreCLI@2
+            displayName: Publish app
+            inputs:
+              command: publish
+              publishWebProjects: false
+              projects: 'src/RubberDuck/RubberDuck.csproj'
+              arguments: '--configuration Release -r linux-x64 --self-contained false --output $(Build.ArtifactStagingDirectory)/Output'
+              zipAfterPublish: true
+
+          - task: PublishPipelineArtifact@1
+            displayName: Upload build artifact
+            inputs:
+              targetPath: '$(Build.ArtifactStagingDirectory)/Output'
+              artifact: 'drop'
+              publishLocation: 'pipeline'
+
+  - stage: Deploy
+    displayName: Deploy to Azure
+    dependsOn: Build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+    jobs:
+      - job: DeployApp
+        displayName: Deploy to App Service
+        steps:
+          - checkout: none
+
+          - download: current
+            artifact: drop
+
+          - task: AzureWebApp@1
+            displayName: Deploy to App Service
+            inputs:
+              azureSubscription: 'azure-rubberduck'
+              appType: webAppLinux
+              appName: $(webAppName)
+              package: '$(Pipeline.Workspace)/drop/*.zip'
