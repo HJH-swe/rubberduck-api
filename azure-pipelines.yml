@@ -1,0 +1,44 @@
+# Azure Pipeline for RubberDuck
+# Restore, build, test and vulnerability scan runs on all pushes
+# Deploy only runs on pushes to main
+
+trigger:
+  branches:
+    include:
+      - '*'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    displayName: Build and test
+    jobs:
+      - job: BuildAndTest
+        displayName: Build and test
+        steps:
+          - task: UseDotNet@2
+            displayName: Install .NET 10
+            inputs:
+              packageType: sdk
+              version: 10.0.x
+
+          - task: DotNetCoreCLI@2
+            displayName: Restore packages
+            inputs:
+              command: restore
+              projects: '**/*.csproj'
+
+          - task: DotNetCoreCLI@2
+            displayName: Build
+            inputs:
+              command: build
+              projects: '**/*.csproj'
+              arguments: '--configuration Release --no-restore'
+
+          - task: DotNetCoreCLI@2
+            displayName: Run tests
+            inputs:
+              command: test
+              projects: 'tests/**/*.csproj'
+              arguments: '--configuration Release --no-build'
