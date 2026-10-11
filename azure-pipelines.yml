@@ -11,6 +11,9 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+  webAppName: 'app-duckapi-gvfp64nsi3it6'
+
 stages:
   - stage: Build
     displayName: Build and test
@@ -34,7 +37,7 @@ stages:
               projects: '**/*.csproj'
 
           - task: SonarCloudPrepare@4.2.6
-            displayName: Sonare prepare
+            displayName: Sonar prepare
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
             inputs:
               SonarCloud: 'sonarqube-cloud'
