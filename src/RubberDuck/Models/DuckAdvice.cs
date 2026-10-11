@@ -1,3 +1,3 @@
 namespace RubberDuck.Models;
 
-public record DuckAdvice(string DuckImageUrl, Quote Wisdom);
+public record DuckAdvice(string DuckImageUrl, Quote Wisdom, String Quack);

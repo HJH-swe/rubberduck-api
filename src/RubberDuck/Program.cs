@@ -29,7 +29,7 @@ app.MapGet("/health", () => Results.Ok(new { status = "healthy" }));
 app.MapGet("/api/duck", async (IDuckImageClient ducks, IQuoteClient quotes, CancellationToken ct) => {
    var url = await ducks.GetRandomDuckUrlAsync(ct);
    var wisdom = await quotes.GetRandomQuoteAsync(ct);
-   return Results.Ok(new DuckAdvice(url, wisdom));
+   return Results.Ok(new DuckAdvice(url, wisdom, "Quack!"));
 });
 
 await app.RunAsync();

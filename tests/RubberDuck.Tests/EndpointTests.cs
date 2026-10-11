@@ -39,6 +39,7 @@ public class EndpointTests(WebApplicationFactory<Program> factory)
         Assert.NotNull(advice);
         Assert.Equal("https://example.test/duck.jpg", advice.DuckImageUrl);
         Assert.Equal("Be brave.", advice.Wisdom.Text);
+        Assert.Equal("Quack!", advice.Quack);
     }
 
     private class FakeDuckImageClient : IDuckImageClient
