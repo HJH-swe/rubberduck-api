@@ -33,7 +33,7 @@ stages:
               command: restore
               projects: '**/*.csproj'
 
-          - task: SonarCloudPrepare@4
+          - task: SonarCloudPrepare@4.2.6
             displayName: Sonare prepare
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
             inputs:
@@ -56,13 +56,13 @@ stages:
               projects: 'tests/**/*.csproj'
               arguments: '--configuration Release --no-build'
 
-          - task: SonarCloudAnalyze@4
+          - task: SonarCloudAnalyze@4.2.6
             displayName: Sonar analysis
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
             inputs:
               jdkversion: 'JAVA_HOME_21_X64'
           
-          - task: SonarCloudPublish@4
+          - task: SonarCloudPublish@4.2.6
             displayName: Sonar publish quality gate result
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
             inputs:

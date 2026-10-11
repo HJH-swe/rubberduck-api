@@ -32,6 +32,5 @@ app.MapGet("/api/duck", async (IDuckImageClient ducks, IQuoteClient quotes, Canc
    return Results.Ok(new DuckAdvice(url, wisdom));
 });
 
-app.Run();
+await app.RunAsync();
 
-public partial class Program { }
