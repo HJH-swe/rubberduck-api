@@ -1,7 +1,10 @@
 # Azure Pipeline for RubberDuck
-# Restore, build, test runs on all pushes, all branches
-# SonarQube scan runs on pushes to main
-# Deploy only runs on pushes to main
+# - Restore, build and test run on every push, on all branches
+# - Sonarqube scan runs on pushes to main
+# - Deploy only runs on pushes to main
+#
+# Before first use, replace the placeholders marked <...>
+# and check that the service connection names match yours (see README).
 
 trigger:
   branches:
@@ -12,7 +15,8 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
-  webAppName: 'app-duckapi-gvfp64nsi3it6'
+  # Output "webAppName" from the Bicep deployment
+  webAppName: '<your-web-app-name>'
 
 stages:
   - stage: Build
@@ -40,10 +44,9 @@ stages:
             displayName: Sonar prepare
             condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
             inputs:
-              SonarCloud: 'sonarqube-cloud'
-              organization: 'hjh-swe'
-              scannerMode: 'dotnet'
-              projectKey: 'hjh-swe_rubber-duck-api'
+              SonarCloud: 'sonarqube-cloud'    # name of your Sonarqube service connection
+              organization: '<your-sonar-organization>'
+              projectKey: '<your-sonar-project-key>'
 
           - task: DotNetCoreCLI@2
             displayName: Build
@@ -103,7 +106,7 @@ stages:
           - task: AzureWebApp@1
             displayName: Deploy to App Service
             inputs:
-              azureSubscription: 'azure-rubberduck'
+              azureSubscription: 'azure-rubberduck'   # name of your Azure service connection
               appType: webAppLinux
               appName: $(webAppName)
               package: '$(Pipeline.Workspace)/drop/*.zip'
